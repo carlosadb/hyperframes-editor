@@ -2,11 +2,13 @@
 
 HTML-native video workspace built on [Hyperframes](https://hyperframes.heygen.com). Scaffolded 2026-04-17 from the `product-promo` example. Not a Remotion project — this is the other pipeline.
 
-**This workspace hosts multiple video projects, one folder each, all under `video-projects/`.** The workspace root holds shared tooling (`node_modules/`, `package.json`, `.claude/`, this `CLAUDE.md`, `DESIGN.ais-example.md`, `MOTION_PHILOSOPHY.md`) — never put `index.html`, `assets/`, `compositions/`, or `renders/` directly at the root. Always work from inside a project subfolder.
+**Proprietário: Carlos Bosco (carlosadb). Studio pessoal de produção de vídeo.**
+
+**This workspace hosts multiple video projects, one folder each, all under `video-projects/`.** The workspace root holds shared tooling (`node_modules/`, `package.json`, `.claude/`, this `CLAUDE.md`, `DESIGN.studio.md`, `MOTION_PHILOSOPHY.md`) — never put `index.html`, `assets/`, `compositions/`, or `renders/` directly at the root. Always work from inside a project subfolder.
 
 ## MOTION_PHILOSOPHY.md — READ BEFORE BRAINSTORMING
 
-**`MOTION_PHILOSOPHY.md` (at the workspace root) is the canonical motion-graphics aesthetic for this workspace.** It is the deconstructed playbook of the Infinite Global Payments 30s spot — the gold standard Nate has chosen for every motion build going forward.
+**`MOTION_PHILOSOPHY.md` (at the workspace root) is the canonical motion-graphics aesthetic for this workspace.** It is the deconstructed playbook of the Infinite Global Payments 30s spot — the gold standard for every motion build.
 
 **You MUST read it before:**
 - Brainstorming a new composition, scene, or storyboard
@@ -19,12 +21,12 @@ HTML-native video workspace built on [Hyperframes](https://hyperframes.heygen.co
 2. **Re-read sections 0 (10 Laws) and 4 (pre-flight checklist)** every time, even on quick iterations. They are the discipline.
 3. **Apply the defaults**: ~1.5s avg scene length, black canvas + perspective grid + crosshairs + vignette + grain on every scene, chrome-gradient text with halo glow, motion-blurred whip transitions (never hard cuts), ≤5 symbolic colors, hold the outro 4–6s, rule of threes.
 4. **Use the recipes**: section 3 has copy-pasteable HyperFrames patterns (composition shell, kinetic-type opener, whip-streak, color-recolor trick, registry block mappings).
-5. **Run the pre-flight checklist** before claiming any motion piece is done. The "What Would Infinite Do?" 10-question test in section 5 is a good gut check before showing Nate.
+5. **Run the pre-flight checklist** before claiming any motion piece is done. The "What Would Infinite Do?" 10-question test in section 5 is a good gut check before any stakeholder review.
 
 **When NOT to apply it:**
-- If a brand brief explicitly demands a different aesthetic (e.g., AIS Shorts use bright/playful Roboto Mono + Montserrat with the AIS palette — see `DESIGN.ais-example.md`). In those cases, keep the *discipline* (one idea per beat, motion in transitions, breathing outros, callbacks) but adapt the *palette and texture* to the brand.
+- If a brand brief explicitly demands a different aesthetic. In those cases, keep the *discipline* (one idea per beat, motion in transitions, breathing outros, callbacks) but adapt the *palette and texture* to the brand. See `DESIGN.studio.md` for the base studio tokens; create a `DESIGN.<client>.md` per project.
 
-If `MOTION_PHILOSOPHY.md` is missing from the workspace root, stop and ask Nate before brainstorming — it should always be there.
+If `MOTION_PHILOSOPHY.md` is missing from the workspace root, stop and verify it's present before brainstorming — it should always be there.
 
 ## Skills — USE THESE FIRST
 
@@ -78,7 +80,7 @@ npx hyperframes docs <topic>                     # inline docs: data-attributes,
 
 ```
 Hyperframes Editor/
-├── CLAUDE.md, AGENTS.md, DESIGN.ais-example.md         ← workspace docs
+├── CLAUDE.md, AGENTS.md, DESIGN.studio.md               ← workspace docs
 ├── MOTION_PHILOSOPHY.md                    ← gold-standard motion-graphics aesthetic (READ before brainstorming)
 ├── package.json, node_modules/              ← workspace tooling
 ├── .claude/                                  ← skills + plugin config
@@ -117,13 +119,13 @@ The CLI reads `hyperframes.json`/`meta.json` from the current directory and reso
 1. `mkdir video-projects/<new-project-slug>` (kebab-case, e.g. `q3-launch-promo`)
 2. `cd video-projects/<new-project-slug>`
 3. Either `npx hyperframes init` to scaffold, or copy the structure from a sibling project (`cp -r ../may-shorts-19/{hyperframes.json,meta.json} .` then edit `meta.json` for the new id/name/dimensions, and create empty `index.html`, `compositions/`, `assets/`, `renders/`)
-4. Pull in any shared brand assets the project needs (e.g. `cp ../../assets/brand-tokens.css ../../assets/AIS\ Logo\ PNG.png assets/`)
+4. Pull in any shared brand assets the project needs (e.g. `cp ../../assets/brand-tokens.css assets/`; add client logo to `assets/` manually)
 5. Build the composition; lint + render from inside this folder
 
 ### What lives at the workspace root
 
 - **Motion-graphics philosophy:** `MOTION_PHILOSOPHY.md` (gold-standard aesthetic, deconstructed Infinite Payments spot — read before brainstorming any composition)
-- Shared brand source-of-truth: `DESIGN.ais-example.md` (AIS brand spec — kept as a worked example; students should write their own `DESIGN.md` for their brand), root `assets/` (AIS Logo PNG, brand-tokens.css, AIS Background.png) — copy into a project's `assets/` when needed
+- Shared brand source-of-truth: `DESIGN.studio.md` (generic studio brand spec; create `DESIGN.<client>.md` per project/client), root `assets/` (brand-tokens.css) — copy into a project's `assets/` when needed
 - Shared raw-recording stash: large source MP4s/MP3s that aren't yet assigned to a project (e.g. raw lesson recordings, license-free music) can sit at root until they're moved into a project's `assets/`
 - Tooling: `node_modules/`, `package.json`, `.claude/`, `.gitignore`, `skills-lock.json`
 
@@ -147,8 +149,8 @@ The CLI reads `hyperframes.json`/`meta.json` from the current directory and reso
 2. Pick the skill → invoke `/hyperframes` (or sibling) before editing.
 3. Edit HTML in `index.html` or `compositions/<name>.html`.
 4. `npx hyperframes lint` — fix errors, triage warnings.
-5. **Localhost Studio preview** — before **any** render (even a draft), start `npx hyperframes preview` in the background and hand Nate the URL. He eyeballs the edit live and iterates; no render cycle until he's seen it. See "Localhost Preview Before Any Render" below.
-6. Only after Nate says the live preview looks right: `render --quality draft` for a draft MP4.
+5. **Localhost Studio preview** — before **any** render (even a draft), start `npx hyperframes preview` in the background and open the Studio URL. Eyeball the edit live and iterate; no render cycle until the preview is approved. See "Localhost Preview Before Any Render" below.
+6. Only after the live preview looks right: `render --quality draft` for a draft MP4.
 7. **Visual verification** (REQUIRED before handoff) — see "Visual Verification" below.
 8. **Run the `MOTION_PHILOSOPHY.md` pre-flight checklist** (section 4) before claiming done.
 9. Second localhost preview pass on the draft MP4 (via static server on port 8080 for scrubbable playback) — wait for explicit sign-off before the final render.
@@ -156,7 +158,7 @@ The CLI reads `hyperframes.json`/`meta.json` from the current directory and reso
 
 ## Visual Verification (MANDATORY before delivery)
 
-Lint passing ≠ design working. Never tell Nate a render is done until you have actually looked at the frames. No exceptions. A "successful" render with a cropped face, misaligned text, or a scene landing on the wrong word is a broken render — and lint exit codes will not catch any of that. Nate has explicitly asked for this gate — treat skipping it as a regression.
+Lint passing ≠ design working. Never declare a render done until you have actually looked at the frames. No exceptions. A "successful" render with a cropped face, misaligned text, or a scene landing on the wrong word is a broken render — and lint exit codes will not catch any of that. Treat skipping visual verification as a regression.
 
 **Required checks before delivery:**
 
@@ -172,16 +174,16 @@ Lint passing ≠ design working. Never tell Nate a render is done until you have
    - Speaker's face is not cropped in any bottom-half scene
    - Full-screen vs bottom-half face mode is correct for each scene
    - Scene transitions land on the intended word
-   - Captions are on-brand (AIS: Montserrat, #37bdf8 accent, #f09025 hot) and readable
+   - Captions are on-brand (per project's `DESIGN.<client>.md` or `DESIGN.studio.md`) and readable
    - No text overflow, no unintentional overlap, no blank frames
-4. If anything is wrong — fix, re-render, re-verify. Never ship a broken render and let Nate find the bug.
+4. If anything is wrong — fix, re-render, re-verify. Never ship a broken render.
 5. Only then run the `standard` quality render and report the path.
 
 **Pre-render (live scrubbing):** Playwright 1.59.1 is installed. For quick contrast/layout checks on a single scene mid-authoring without paying a full render, run `npx hyperframes preview` (opens on localhost:3002) and drive Playwright to screenshot the live state at specific timestamps. Useful when iterating on one scene's visual balance before committing to a draft render.
 
 ## Localhost Preview Before Any Render (MANDATORY)
 
-**Every edit pass gets two preview gates**: one on the live Studio **before** any render (so Nate can iterate on cheap edits without waiting for a render), and one on the rendered MP4 **before** the final `--quality standard` bake. Do not run `render --quality draft` OR `render --quality standard` until Nate has eyeballed the relevant state in his browser.
+**Every edit pass gets two preview gates**: one on the live Studio **before** any render (cheap iterations without waiting for a render), and one on the rendered MP4 **before** the final `--quality standard` bake. Do not run `render --quality draft` OR `render --quality standard` until the relevant state has been reviewed in-browser.
 
 ### Gate 1 — Live Studio preview (before any render)
 
@@ -193,21 +195,21 @@ After editing compositions and before any render command:
    npx hyperframes preview    # run_in_background: true
    ```
 2. Wait for "Studio running" on http://localhost:3002.
-3. Hand Nate the URL + tell him exactly which sub-compositions to scrub (individual comp URLs load fastest — the master composition can stall when it includes WebGL shader blocks under software WebGL fallback). Example: `http://localhost:3002/?comp=v01-kinetic-type`.
-4. Wait for Nate's explicit sign-off on the live preview ("looks good, render a draft" / "ship it" / "go ahead"). Silence is not approval.
+3. Open the Studio URL and note which sub-compositions to scrub (individual comp URLs load fastest — the master composition can stall when it includes WebGL shader blocks under software WebGL fallback). Example: `http://localhost:3002/?comp=v01-kinetic-type`.
+4. Wait for explicit sign-off on the live preview ("looks good, render a draft" / "ship it" / "go ahead"). Silence is not approval.
 5. Hot reload means any further edit you make shows up live without a restart.
 
 ### Gate 2 — Rendered MP4 preview (before final)
 
 After frame-verification passes on a draft render:
 
-6. Serve `renders/` via `npx serve . -p 8080 -n` (NOT Python's `http.server` — it doesn't support HTTP Range requests, so scrubbing breaks). Hand Nate `http://localhost:8080/<project>-draft.mp4`.
+6. Serve `renders/` via `npx serve . -p 8080 -n` (NOT Python's `http.server` — it doesn't support HTTP Range requests, so scrubbing breaks). Review at `http://localhost:8080/<project>-draft.mp4`.
 7. Wait for explicit sign-off on the full motion + audio playback.
 8. Then run the final `--quality standard` render; report the output path.
 
 Why two gates: the live Studio catches layout/timing/visual bugs on edits you just made — before spending ~2 minutes per render iteration. The rendered-MP4 gate catches pacing, audio sync, and beat-to-beat feel that only reads correctly in real-time playback. Skipping either one turns render cycles into expensive guesses.
 
-**If the master composition stalls in Studio** (software WebGL + multiple shader blocks): route Nate to individual sub-composition URLs instead. They load instantly and isolate the change you're previewing.
+**If the master composition stalls in Studio** (software WebGL + multiple shader blocks): use individual sub-composition URLs instead. They load instantly and isolate the change you're previewing.
 
 The render is the ground truth. "The code looks correct" doesn't clear the bar.
 
