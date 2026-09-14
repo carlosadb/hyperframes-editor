@@ -28,19 +28,81 @@ HTML-native video workspace built on [Hyperframes](https://hyperframes.heygen.co
 
 If `MOTION_PHILOSOPHY.md` is missing from the workspace root, stop and verify it's present before brainstorming — it should always be there.
 
+## Complete Studio Pipeline
+
+This workspace runs a **two-stage serial pipeline**. Stage 1 cleans up raw footage; Stage 2 adds motion graphics.
+
+```
+raw.mov / raw.mp4
+  ↓
+[Stage 1 — video-use  /video-use]
+  Transcribe (ElevenLabs Scribe, word-level) → edit/transcripts/<stem>.json
+  Pack transcript → edit/takes_packed.md
+  LLM proposes EDL → user confirms → edit/edit.json
+  Render: cut + grade + loudnorm (-14 LUFS) → edit/final.mp4
+  ↓
+  cp edit/final.mp4 assets/edited.mp4   (+ re-encode to H.264 if needed)
+  ↓
+[Stage 2 — HyperFrames  /hyperframes]
+  <video src="assets/edited.mp4"> in composition
+  Kinetic-type captions from transcript JSON (never burned via ffmpeg)
+  Motion graphics, overlays, shader transitions, outro
+  npx hyperframes render → renders/final.mp4
+```
+
+**Key decisions (non-negotiable for this studio):**
+- **Subtitles**: always off in video-use (`--build-subtitles` NOT used). HyperFrames owns captions via kinetic-type, aligned to `MOTION_PHILOSOPHY.md`.
+- **Color grade**: `subtle` or `auto` on face-cam footage in Stage 1. `warm_cinematic` clashes with HyperFrames grain/vignette/shader layers.
+- **Loudnorm**: handled in Stage 1 (-14 LUFS, two-pass). Don't re-normalize in Stage 2 unless mixing new audio.
+
 ## Skills — USE THESE FIRST
 
 **Always invoke the matching skill before writing or modifying compositions.** Skills encode framework-specific patterns (`window.__timelines` registration, `data-*` attribute semantics, shader-compatible CSS, relative-timing syntax) that are NOT in generic web docs. Skipping them produces broken compositions.
 
 | Skill                    | Command                    | When to use                                                                               |
 | ------------------------ | -------------------------- | ----------------------------------------------------------------------------------------- |
-| `hyperframes`            | `/hyperframes`             | Authoring/editing compositions, captions, TTS, audio-reactive animation, transitions      |
+| `video-use`              | `/video-use`               | **Stage 1**: raw footage → transcribe, cut silence, color grade, loudnorm → clean MP4    |
+| `hyperframes`            | `/hyperframes`             | **Stage 2**: authoring compositions, captions, TTS, audio-reactive animation, transitions |
 | `hyperframes-cli`        | `/hyperframes-cli`         | CLI commands: `init`, `add`, `lint`, `preview`, `render`, `transcribe`, `tts`, `doctor`   |
 | `gsap`                   | `/gsap`                    | GSAP animation — timelines, easing, stagger, ScrollTrigger, plugins, performance          |
 | `hyperframes-registry`   | `/hyperframes-registry`    | Installing catalog blocks/components via `npx hyperframes add <name>`                     |
 | `website-to-hyperframes` | `/website-to-hyperframes`  | Turning a URL into a composition (7-step capture-to-video pipeline)                       |
 
 Not present? `npx skills add heygen-com/hyperframes --yes` then reopen this directory.
+
+## video-use — Installation (one-time, Windows)
+
+```bash
+# Clone the tool (do NOT symlink on Windows)
+git clone https://github.com/browser-use/video-use C:/tools/video-use
+cd C:/tools/video-use
+pip install -e .
+
+# FFmpeg — required (winget or chocolatey)
+winget install --id=Gyan.FFmpeg -e
+
+# ElevenLabs API key (word-level transcription — billed per audio minute)
+cp .env.example .env   # then edit .env: ELEVENLABS_API_KEY=your_key
+```
+
+### video-use quick commands (run from inside `video-projects/<slug>/`)
+
+```bash
+# Transcribe raw footage (cached — safe to re-run)
+python C:/tools/video-use/helpers/transcribe.py raw.mp4 --language pt
+
+# Pack transcript for LLM reasoning
+python C:/tools/video-use/helpers/pack_transcripts.py --edit-dir edit
+
+# Render EDL (after strategy confirmed — never --build-subtitles)
+python C:/tools/video-use/helpers/render.py edit/edit.json -o edit/final.mp4
+
+# Visual inspection of a cut range (generates filmstrip+waveform PNG)
+python C:/tools/video-use/helpers/timeline_view.py raw.mp4 --start 12 --end 20 --transcript edit/transcripts/raw.json
+
+# Hand off clean edit to HyperFrames assets
+ffmpeg -i edit/final.mp4 -c:v libx264 -preset medium -crf 20 -c:a aac -b:a 192k -movflags +faststart assets/edited.mp4
+```
 
 ## Commands
 
