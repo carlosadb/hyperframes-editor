@@ -61,12 +61,21 @@ raw.mov / raw.mp4
 
 | Skill                    | Command                    | When to use                                                                               |
 | ------------------------ | -------------------------- | ----------------------------------------------------------------------------------------- |
-| `video-use`              | `/video-use`               | **Stage 1**: raw footage → transcribe, cut silence, color grade, loudnorm → clean MP4    |
+| `video-use`              | `/video-use`               | **Stage 1 (alternativa A)**: raw footage → transcribe, cut silence, color grade, loudnorm → clean MP4 |
+| `edit-video`             | `/edit-video`              | **Stage 1 (alternativa B — kit nativo set/2026)**: coordena transcrição, cortes, design e verificação |
+| `short-form-edit`        | `/short-form-edit`         | Reels, Shorts e anúncios curtos (9:16) — ver `docs/SHORT-FORM.md`                         |
+| `cut-silences`           | `/cut-silences`            | Remoção de silêncio (kit nativo; gera transcrição retimada junto)                         |
+| `cut-mistakes`           | `/cut-mistakes`            | Retakes, false starts, gaguejos — agente propõe, humano aprova em `approved-cuts.json`    |
 | `hyperframes`            | `/hyperframes`             | **Stage 2**: authoring compositions, captions, TTS, audio-reactive animation, transitions |
 | `hyperframes-cli`        | `/hyperframes-cli`         | CLI commands: `init`, `add`, `lint`, `preview`, `render`, `transcribe`, `tts`, `doctor`   |
 | `gsap`                   | `/gsap`                    | GSAP animation — timelines, easing, stagger, ScrollTrigger, plugins, performance          |
 | `hyperframes-registry`   | `/hyperframes-registry`    | Installing catalog blocks/components via `npx hyperframes add <name>`                     |
+| `hyperframes-video-beats`| `/hyperframes-video-beats` | Overlay beats, paper takeovers, glass cards sobre o footage                               |
+| `video-storytelling`     | `/video-storytelling`      | Arco narrativo, mundo persistente, callbacks visuais                                      |
+| `style-library`          | `/style-library`           | Selecionar/estender estilos e templates (`style-templates/`, `registry.json`)             |
 | `website-to-hyperframes` | `/website-to-hyperframes`  | Turning a URL into a composition (7-step capture-to-video pipeline)                       |
+| `short-form-video`       | `/short-form-video`        | Manutenção dos exemplos May Shorts                                                        |
+| `make-a-video`           | `/make-a-video`            | Novo vídeo motion-graphics a partir de um brief                                           |
 
 Not present? `npx skills add heygen-com/hyperframes --yes` then reopen this directory.
 
@@ -320,3 +329,25 @@ The `/hyperframes*` skills encode the common authoring patterns, but the hosted 
 - **Core concepts & guides:** listed in `llms.txt` — covers compositions, deterministic rendering, frame adapters, GSAP animation, prompt guide, website-to-video, troubleshooting, common mistakes. Fetch `llms.txt` to resolve exact paths.
 
 **When to reach for this:** brainstorming a new scene ("what block could sell this beat?"), looking up a block's exact props before wiring it into a composition, deep-diving into a package API, or debugging something the render contract doesn't explain.
+## Kit nativo de edição (upstream set/2026)
+
+O merge trouxe o pipeline de edição do Nate como skills/scripts nativos — **alternativa B ao video-use no Stage 1** (mesma função: MP4 limpo + transcrição word-level pro Stage 2):
+
+- `npm run new-video -- <slug>` — cria projeto com estrutura completa
+- Ordem dos cortes: `cut-silences` primeiro → usa o vídeo E a transcrição retimada no `cut-mistakes` → decisões revisadas ficam em `approved-cuts.json` → `apply-cuts` aplica
+- Repetição intencional não é erro. Nunca misturar timestamps originais com footage editado
+- Validação: `node scripts/preflight.mjs <proj>` + `node scripts/validate-beat-sync.mjs <proj>` (beats ancorados: `data-anchor` com frase exata da transcrição; entrada entre 0,2s depois e 1,8s antes da palavra)
+- Evidência de verificação salva em `VERIFY.md` do projeto
+- Docs: `docs/WORKFLOW.md` (edição completa), `docs/SHORT-FORM.md` (reels/ads), `docs/TOOLS-AND-API-KEYS.md` (**ler antes de escolher** serviço de transcrição/geração — ElevenLabs Scribe é default do Nate; honrar pedidos por Whisper local). Reusar transcripts/assets existentes; tornar explícito qualquer upload não aprovado ou chamada paga antes de executar
+
+### Runtime routing
+
+`AGENTS.md` e `CLAUDE.md` contêm o mesmo guia — manter sincronizados. Skills canônicas vivem em `.claude/skills/`; `npm run sync:skills` gera `.agents/skills/` (Codex). `$edit-video` no Codex = `/edit-video` no Claude Code.
+
+### Privacidade
+
+Os 12 projetos públicos do kit são exemplos de ensino — **não** adicionar footage pessoal/de cliente neles, nem copiar mídia privada para exemplos da biblioteca. Projetos privados novos ficam gitignored. Nunca printar secrets.
+
+## MOTION_PHILOSOPHY vs brief do projeto
+
+A filosofia (fast sizzle pacing) é **referência de estilo**, não lei: conteúdo educacional precisa de respiro. O brief do projeto controla pacing, paleta e tipografia. Contratos de skill do framework sobrepõem receitas históricas do style guide.
