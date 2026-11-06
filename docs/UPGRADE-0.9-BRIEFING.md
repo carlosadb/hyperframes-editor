@@ -84,4 +84,4 @@ Fonte: "Opus 5.5 Just Changed Video Editing Forever (free skills)" (https://yout
 
 1. **Ducking automático** pode não servir para anúncio com trilha forte. Verificar se há como desligar por composição, se o resultado não agradar
 2. **App HyperFrames para Windows:** avaliar depois do upgrade se vale usar no lugar do Studio no navegador
-3. **Notas de release completas** baixadas em `C:\Users\carlo\AppData\Local\Temp\hfrel\` (temporário; fonte oficial: pasta `releases/` do repo `heygen-com/hyperframes`)
+3. **Notas de release completas** baixadas em `%TEMP%\hfrel\` (temporário; fonte oficial: pasta `releases/` do repo `heygen-com/hyperframes`)
