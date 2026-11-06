@@ -85,7 +85,7 @@ Check the storyboard's transition specification for this beat:
 - **Shader transition**: no exit animation needed — the shader handles the blend. Install the shader block from the registry (`npx hyperframes add <name>`, see `/hyperframes-registry`) and mount it as printed by `add`. Do not hand-write or simplify the WebGL boilerplate — a simplified version produces black screens.
 - **Hard cut**: no exit animation. The scene simply ends.
 
-For CSS transition types and their GSAP implementations, read `../hyperframes/references/motion.md` ("Transitions with a cause") and browse `npx hyperframes catalog --tag transition --json`.
+For CSS transition types and their GSAP implementations, read `../../hyperframes/references/motion.md` ("Transitions with a cause") and browse `npx hyperframes catalog --tag transition --json`.
 
 ### 7. Asset cross-reference
 

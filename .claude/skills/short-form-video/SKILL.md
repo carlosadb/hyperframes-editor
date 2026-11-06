@@ -134,7 +134,7 @@ One scene = one sub-composition file. Scenes sit on the same `data-track-index` 
 - Drop the rgba background pill — let the stroke hold readability. Captions should feel like graffiti on the frame, not a subtitle track.
 - For retimes, use a `shift()` function inside `captions.html` to map transcript word timestamps → edited-time. This keeps the transcript JSON untouched and makes retimes mechanical.
 
-See `references/captions.md` under `/hyperframes` for the full karaoke implementation. TL;DR: per-word `<span>` elements with `data-word-start`, GSAP tweens scoped to each span, tight 0.08–0.12s pop durations.
+See `audio/references/captions/motion.md` and `authoring.md` under `/media-use` for the full karaoke implementation (HyperFrames 0.9 moved it out of `/hyperframes`). TL;DR: per-word `<span>` elements with `data-word-start`, GSAP tweens scoped to each span, tight 0.08–0.12s pop durations.
 
 ## Ambient background (never ship flat navy)
 
@@ -157,7 +157,7 @@ Minimum viable background stack:
 
 - **Rotate flavors.** No two consecutive transitions the same type. Six hard cuts in a row is the #1 tell for AI editing.
 - Face-mode transitions (`BOTTOM ↔ FULLSCREEN`) double as scene transitions when the mode changes between scenes.
-- For pure overlay scene-to-scene, install from registry: `push-up`, `flash-through-white`, `sdf-iris`, or the full shader-transitions pack. `npx hyperframes catalog --type block` to browse.
+- For pure overlay scene-to-scene, install from registry: `transitions-push`, `flash-through-white`, `sdf-iris`, or the full shader-transitions pack. `npx hyperframes catalog --type block` to browse.
 
 ## The verification gate (mandatory — DO NOT ship without)
 

@@ -116,7 +116,7 @@ Every element gets a verb. If you can't name the verb, the element is not yet de
 
 How this beat hands off to the next. Specify the type and parameters.
 
-**CSS transitions** (principles in `../hyperframes/references/motion.md` → "Transitions with a cause"; ready-made packs via `npx hyperframes catalog --tag transition --json`):
+**CSS transitions** (principles in `../../hyperframes/references/motion.md` → "Transitions with a cause"; ready-made packs via `npx hyperframes catalog --tag transition --json`):
 
 - Velocity-matched upward: exit `y:-150, blur:30px, 0.33s power2.in` → entry `y:150→0, blur:30px→0, 1.0s power2.out`
 - Whip pan: exit `x:-400, blur:24px, 0.3s power3.in` → entry `x:400→0, blur:24px→0, 0.3s power3.out`

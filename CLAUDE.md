@@ -83,12 +83,12 @@ Not present? Restaurar do git — **não** rodar `npx skills add` nem `npx hyper
 
 ## HyperFrames 0.9 (upgrade 06/11/2026)
 
-- Pacote `hyperframes` **0.9.19**. Skills `hyperframes`, `hyperframes-cli`, `hyperframes-registry`, `media-use` são cópia da oficial v0.9.19 **sem a linha "Usage beacon"** (telemetria desligada: `npx hyperframes telemetry disable`). Por isso `hyperframes skills check` as marca como "outdated" — é esperado. **Nunca rodar `hyperframes skills update`**: reinstala o beacon e sobrescreve.
+- Pacote `hyperframes` **0.9.19**. Skills `hyperframes`, `hyperframes-cli`, `hyperframes-registry`, `media-use` são cópia da oficial v0.9.19 **sem a linha "Usage beacon"** (telemetria desligada: `npx hyperframes telemetry disable`). Por isso `hyperframes skills check` as marca como "outdated" — é esperado. **Nunca rodar `hyperframes skills update`, `hyperframes update` (atualiza CLI + skills juntos) nem `hyperframes skills` sem subcomando (instala tudo)**: reinstalam o beacon e sobrescrevem. A CLI sugere "skills update" em mensagens — ignorar. `npx hyperframes init` sempre com `--skip-skills`.
 - `gsap` e `website-to-hyperframes` não existem mais upstream; mantidas do kit (outras skills chamam pelo nome).
 - `reverse-any-video` e `style-sampling` (oficiais) **não instaladas**: são recurso HyperFrames Pro (pago).
 - Verificação: `npx hyperframes check` (lint + runtime + layout + motion + contraste + craft, num browser) substitui `animation-map.mjs`/`contrast-report.mjs`. Piso tipográfico do Craft: 28 px no lado curto de 1080.
-- `npx hyperframes preview` agora roda como daemon (devolve o terminal); parar com `npx hyperframes preview <dir> --stop`.
-- Render local usa 5 workers + GPU: o 041 caiu de 4m38s para 54s, saída idêntica (mesmo LUFS, PSNR mín. 36 dB).
+- Em shell não interativo (agente), `npx hyperframes preview` roda em background e devolve o terminal; `--status` / `--stop` controlam o servidor.
+- Render local: `--workers auto` (5 nesta máquina) + captura Chrome com GPU (`--browser-gpu` auto; o `--gpu` de encode segue desligado). O 041 caiu de 4m38s para 54s com o comando padrão `render --quality draft`, saída idêntica (mesmo LUFS, PSNR mín. 36 dB).
 - `scripts/preflight.mjs` acusa falso positivo `root_data_start_conflicts_with_video` — o `check` da 0.9 é a autoridade.
 
 ## video-use — Installation (one-time, Windows)
@@ -153,7 +153,7 @@ npx hyperframes docs <topic>                     # inline docs: data-attributes,
 
 ### Render flags worth knowing
 
-- `--quality draft|standard|high` — CRF 28 / 18 / 15 (standard is visually lossless at 1080p)
+- `--quality draft|looks|delivery|standard|high` — 0.9: `looks` is the default (CRF 16), `delivery` = high; `draft` for iteration
 - `--fps 24|30|60` (default 30)
 - `--format mp4|mov|webm` — `mov` = ProRes 4444 with alpha, `webm` = VP9 alpha (Chromium only)
 - `--workers <n>` / `--gpu` / `--docker` / `--crf <n>` / `--video-bitrate 10M`
@@ -201,7 +201,7 @@ The CLI reads `hyperframes.json`/`meta.json` from the current directory and reso
 
 1. `mkdir video-projects/<new-project-slug>` (kebab-case, e.g. `q3-launch-promo`)
 2. `cd video-projects/<new-project-slug>`
-3. Either `npx hyperframes init` to scaffold, or copy the structure from a sibling project (`cp -r ../may-shorts-19/{hyperframes.json,meta.json} .` then edit `meta.json` for the new id/name/dimensions, and create empty `index.html`, `compositions/`, `assets/`, `renders/`)
+3. Either `npx hyperframes init --skip-skills` to scaffold (always `--skip-skills`, see "HyperFrames 0.9"), or copy the structure from a sibling project (`cp -r ../may-shorts-19/{hyperframes.json,meta.json} .` then edit `meta.json` for the new id/name/dimensions, and create empty `index.html`, `compositions/`, `assets/`, `renders/`)
 4. Pull in any shared brand assets the project needs (e.g. `cp ../../assets/brand-tokens.css assets/`; add client logo to `assets/` manually)
 5. Build the composition; lint + render from inside this folder
 
