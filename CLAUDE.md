@@ -347,14 +347,21 @@ O merge trouxe o pipeline de edição do Nate como skills/scripts nativos — **
 
 - `npm run new-video -- <slug>` — cria projeto com estrutura completa
 - Ordem dos cortes: `cut-silences` primeiro → usa o vídeo E a transcrição retimada no `cut-mistakes` → decisões revisadas ficam em `approved-cuts.json` → `apply-cuts` aplica
-- Repetição intencional não é erro. Nunca misturar timestamps originais com footage editado
-- Validação: `node scripts/preflight.mjs <proj>` + `node scripts/validate-beat-sync.mjs <proj>` (beats ancorados: `data-anchor` com frase exata da transcrição; entrada entre 0,2s depois e 1,8s antes da palavra)
-- Evidência de verificação salva em `VERIFY.md` do projeto
-- Docs: `docs/WORKFLOW.md` (edição completa), `docs/SHORT-FORM.md` (reels/ads), `docs/TOOLS-AND-API-KEYS.md` (**ler antes de escolher** serviço de transcrição/geração — ElevenLabs Scribe é default do Nate; honrar pedidos por Whisper local). Reusar transcripts/assets existentes; tornar explícito qualquer upload não aprovado ou chamada paga antes de executar
+- Revisar cada erro no contexto. Repetição intencional não é erro. Sem cortes necessários: preservar o input ou usar lista de cortes vazia. Nunca misturar timestamps originais com footage editado
+- Preservar o raw. Cada etapa de edição grava num arquivo de saída novo; trabalho obsoleto é arquivado, não sobrescrito. Os utilitários de `scripts/` aceitam caminhos relativos ao diretório atual
+- Validação: `node scripts/preflight.mjs <proj>` + `node scripts/validate-beat-sync.mjs <proj>` (beats ancorados: `data-anchor` com frase exata da transcrição; entrada entre 0,2s depois e 1,8s antes da palavra). Timelines inline (sem `data-anchor`) exigem revisão manual de timing
+- Revisão do draft, além dos frames: ouvir as emendas de áudio; checar rosto cortado, overflow, flash preto, labels legíveis, clipping e sincronia A/V. Evidência salva em `VERIFY.md` do projeto
+- Docs: `docs/WORKFLOW.md` (edição completa), `docs/SHORT-FORM.md` + `docs/EDITING-PLAYBOOK.md` (reels/ads — house style medido do Nate e lições; o brief do cliente vence), `docs/TOOLS-AND-API-KEYS.md` (**ler antes de escolher** serviço de transcrição/geração/voz — ElevenLabs Scribe é default do Nate; honrar pedidos por Whisper local ou outro provedor). O script de transcrição incluído é só ElevenLabs; normalizar timestamps verificados antes dos cortes. Kie.ai é opcional e exige integração configurada + créditos. Reusar transcripts/assets existentes; tornar explícito qualquer upload não aprovado ou chamada paga antes de executar
+- Short-form: usar os validators de plano e footage (`npm run validate:short-form`, `npm run validate:footage`) — checagem estrutural complementa, não substitui, a revisão do vídeo e do áudio renderizados
+- Style library: `style-library/registry.json` indexa os cards (cada estilo tem DESIGN.md, tokens CSS e slots de texto nomeados); templates de cena inteira em `style-templates/README.md`
+
+### Aprovações
+
+Honrar aprovações já dadas. Sem aprovação de revisão: preparar primeiro o preview concreto ou a proposta de cortes. Lint passando nunca prova qualidade visual. Publicar ou fazer upload de vídeo pronto só com autorização explícita. Checagens automatizadas de navegador rodam headless, com Pointer Lock e captura de cursor desligados; input sintético fica dentro do navegador virtual.
 
 ### Runtime routing
 
-`AGENTS.md` e `CLAUDE.md` contêm o mesmo guia — manter sincronizados. Skills canônicas vivem em `.claude/skills/`; `npm run sync:skills` gera `.agents/skills/` (Codex). `$edit-video` no Codex = `/edit-video` no Claude Code.
+`AGENTS.md` é **cópia exata** deste `CLAUDE.md` (o `check-kit` falha se divergirem): editar só o `CLAUDE.md` e copiar por cima (`cp CLAUDE.md AGENTS.md`). Skills canônicas vivem em `.claude/skills/`; `npm run sync:skills` gera `.agents/skills/` (Codex). `$edit-video` no Codex = `/edit-video` no Claude Code. Modelo e permissões são escolha do usuário; `.codex/config.toml` só adiciona defaults de carregamento de documentos. Trabalhar localmente, sem subagentes, salvo pedido do usuário.
 
 ### Privacidade
 

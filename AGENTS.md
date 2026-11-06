@@ -1,109 +1,372 @@
-# HyperFrames Student Kit: workspace guide
+# Hyperframes Editor — Workspace Guide
 
-Turn a talking-head recording into an intentional edit using local HyperFrames
-rendering, transcript-driven cuts, and reusable motion graphics.
+HTML-native video workspace built on [Hyperframes](https://hyperframes.heygen.com). Scaffolded 2026-04-17 from the `product-promo` example. Not a Remotion project — this is the other pipeline.
 
-## Runtime routing
+**Proprietário: Carlos Bosco (carlosadb). Studio pessoal de produção de vídeo.**
 
-`AGENTS.md` and `CLAUDE.md` contain the same standing guide. Keep them synchronized.
-Claude Code uses `.claude/skills/`. Codex uses the generated `.agents/skills/`.
-Edit canonical skills in `.claude/skills/`, then run `npm run sync:skills`.
-Use `$edit-video` in Codex, `/edit-video` in Claude Code, or natural language.
-Model and permission choices belong to the user; `.codex/config.toml` only adds
-document loading defaults. Work locally unless the user requests subagents.
+**This workspace hosts multiple video projects, one folder each, all under `video-projects/`.** The workspace root holds shared tooling (`node_modules/`, `package.json`, `.claude/`, this `CLAUDE.md`, `DESIGN.studio.md`, `MOTION_PHILOSOPHY.md`) — never put `index.html`, `assets/`, `compositions/`, or `renders/` directly at the root. Always work from inside a project subfolder.
 
-## Start and route
+## MOTION_PHILOSOPHY.md — READ BEFORE BRAINSTORMING
 
-Read `README.md` for installation and `docs/WORKFLOW.md` for a complete edit.
-Use `edit-video` to coordinate transcription, cuts, design, and verification.
-For one stage, load the matching local skill:
+**`MOTION_PHILOSOPHY.md` (at the workspace root) is the canonical motion-graphics aesthetic for this workspace.** It is the deconstructed playbook of the Infinite Global Payments 30s spot — the gold standard for every motion build.
 
-| Need | Skill |
-| --- | --- |
-| Reels, Shorts, and short advertisements | `short-form-edit` |
-| Existing May Shorts example maintenance | `short-form-video` |
-| New motion-graphics video from a brief | `make-a-video` |
-| Website-inspired compositions | `website-to-hyperframes` |
-| Full raw-video edit | `edit-video` |
-| Silence removal | `cut-silences` |
-| Retakes, false starts, or stutters | `cut-mistakes` |
-| Narrative arc, persistent world, and visual callbacks | `video-storytelling` |
-| Overlay beats, paper takeovers, and glass cards | `hyperframes-video-beats` |
-| Select or extend styles and templates | `style-library` |
-| HTML compositions and media timing | `hyperframes` |
-| Preview, lint, and rendering | `hyperframes-cli` |
-| Timeline animation | `gsap` |
-| Install HyperFrames catalog blocks | `hyperframes-registry` |
+**You MUST read it before:**
+- Brainstorming a new composition, scene, or storyboard
+- Proposing a visual direction, palette, or pacing
+- Picking transitions, animations, or registry blocks
+- Designing any kinetic typography, logo reveal, or product showcase
 
-Before a creative session read `MOTION_PHILOSOPHY.md` and the project's DESIGN.md.
-The philosophy's fast sizzle pacing is a style reference. Give educational speech
-room to breathe. The project brief controls pacing, palette, and typography.
-Framework skill contracts override historical code recipes in the style guide.
+**How to use it:**
+1. **Always read the full file** at the start of any creative session — `Read MOTION_PHILOSOPHY.md` from the workspace root. Don't skim, don't quote from memory. The doc evolves.
+2. **Re-read sections 0 (10 Laws) and 4 (pre-flight checklist)** every time, even on quick iterations. They are the discipline.
+3. **Apply the defaults**: ~1.5s avg scene length, black canvas + perspective grid + crosshairs + vignette + grain on every scene, chrome-gradient text with halo glow, motion-blurred whip transitions (never hard cuts), ≤5 symbolic colors, hold the outro 4–6s, rule of threes.
+4. **Use the recipes**: section 3 has copy-pasteable HyperFrames patterns (composition shell, kinetic-type opener, whip-streak, color-recolor trick, registry block mappings).
+5. **Run the pre-flight checklist** before claiming any motion piece is done. The "What Would Infinite Do?" 10-question test in section 5 is a good gut check before any stakeholder review.
 
-## Workspace
+**When NOT to apply it:**
+- If a brand brief explicitly demands a different aesthetic. In those cases, keep the *discipline* (one idea per beat, motion in transitions, breathing outros, callbacks) but adapt the *palette and texture* to the brand. See `DESIGN.studio.md` for the base studio tokens; create a `DESIGN.<client>.md` per project.
 
-Create a project with `npm run new-video -- my-video`. Keep source media, EDLs,
-transcripts, compositions, and renders together under `video-projects/<slug>/`.
-Run HyperFrames from that project's directory. The root `scripts/` utilities
-accept paths from the working directory. `style-library/registry.json` indexes
-cards; each style has a DESIGN.md, CSS tokens, and named text slots.
-See `style-templates/README.md` for whole-scene templates.
+If `MOTION_PHILOSOPHY.md` is missing from the workspace root, stop and verify it's present before brainstorming — it should always be there.
 
-Preserve raw files. Use a new output filename for each editing stage. Archive
-obsolete work. Video projects, personal footage, transcripts, credentials, and
-renders are gitignored. The 12 already-published projects are retained as teaching examples; new private
-projects stay ignored. Do not treat existing public examples as permission to add
-new personal footage. Never print secrets or copy private media into library examples.
+## Complete Studio Pipeline
 
-## Editing and timing
+This workspace runs a **two-stage serial pipeline**. Stage 1 cleans up raw footage; Stage 2 adds motion graphics.
 
-Before choosing a transcription, asset-generation, or voiceover service, read
-`docs/TOOLS-AND-API-KEYS.md` and check the user's provider choice and local setup.
-ElevenLabs Scribe is Nate's default; honor requests for OpenAI Whisper, local
-Whisper, or another provider. Normalize verified word timestamps for the cutting
-tools. The included transcription script is ElevenLabs-only. Kie.ai is optional
-and needs a configured integration and credits. Reuse existing transcripts and
-assets; make any unapproved uploads or paid calls concrete before asking.
+```
+raw.mov / raw.mp4
+  ↓
+[Stage 1 — video-use  /video-use]
+  Transcribe (ElevenLabs Scribe, word-level) → edit/transcripts/<stem>.json
+  Pack transcript → edit/takes_packed.md
+  LLM proposes EDL → user confirms → edit/edit.json
+  Render: cut + grade + loudnorm (-14 LUFS) → edit/final.mp4
+  ↓
+  cp edit/final.mp4 assets/edited.mp4   (+ re-encode to H.264 if needed)
+  ↓
+[Stage 2 — HyperFrames  /hyperframes]
+  <video src="assets/edited.mp4"> in composition
+  Kinetic-type captions from transcript JSON (never burned via ffmpeg)
+  Motion graphics, overlays, shader transitions, outro
+  npx hyperframes render → renders/final.mp4
+```
 
-Cut silences first; use its edited video AND retimed transcript for cut-mistakes.
-Review each mistake in context. Intentional repetition is not a mistake. Record
-the reviewed decisions before applying them. If no cuts are needed, preserve the
-input or use an empty cuts list. Never mix original timestamps with edited footage.
+**Key decisions (non-negotiable for this studio):**
+- **Subtitles**: always off in video-use (`--build-subtitles` NOT used). HyperFrames owns captions via kinetic-type, aligned to `MOTION_PHILOSOPHY.md`.
+- **Color grade**: `subtle` or `auto` on face-cam footage in Stage 1. `warm_cinematic` clashes with HyperFrames grain/vignette/shader layers.
+- **Loudnorm**: handled in Stage 1 (-14 LUFS, two-pass). Don't re-normalize in Stage 2 unless mixing new audio.
 
-Load the relevant skills before changing HTML. Root compositions use a visible
-div with id, data-composition-id, data-start, duration, width, and height. Timed
-elements carry data-start, data-duration, and data-track-index; same-track clips
-must not overlap. Visible timed divs use class="clip"; videos do not.
-Mute videos and use sibling audio for the mix. Animate a non-timed video wrapper.
-Register one synchronous paused GSAP timeline per composition in window.__timelines
-using its exact composition ID. Keep finite timelines and explicit durations.
-HyperFrames owns media playback. Use deterministic animation and local assets.
+## Skills — USE THESE FIRST
 
-## Verification and approvals
+**Always invoke the matching skill before writing or modifying compositions.** Skills encode framework-specific patterns (`window.__timelines` registration, `data-*` attribute semantics, shader-compatible CSS, relative-timing syntax) that are NOT in generic web docs. Skipping them produces broken compositions.
 
-Run `node scripts/preflight.mjs <project>` and HyperFrames lint. For anchored
-sub-compositions, run `node scripts/validate-beat-sync.mjs <project>`; each beat
-needs data-anchor with an exact transcript phrase. Enter between 0.2 seconds after
-and 1.8 seconds before that word. Inline timelines require manual timing review.
+| Skill                    | Command                    | When to use                                                                               |
+| ------------------------ | -------------------------- | ----------------------------------------------------------------------------------------- |
+| `video-use`              | `/video-use`               | **Stage 1 (alternativa A)**: raw footage → transcribe, cut silence, color grade, loudnorm → clean MP4 |
+| `edit-video`             | `/edit-video`              | **Stage 1 (alternativa B — kit nativo set/2026)**: coordena transcrição, cortes, design e verificação |
+| `short-form-edit`        | `/short-form-edit`         | Reels, Shorts e anúncios curtos (9:16) — ver `docs/SHORT-FORM.md`                         |
+| `cut-silences`           | `/cut-silences`            | Remoção de silêncio (kit nativo; gera transcrição retimada junto)                         |
+| `cut-mistakes`           | `/cut-mistakes`            | Retakes, false starts, gaguejos — agente propõe, humano aprova em `approved-cuts.json`    |
+| `hyperframes`            | `/hyperframes`             | **Stage 2**: authoring compositions, captions, TTS, audio-reactive animation, transitions |
+| `hyperframes-cli`        | `/hyperframes-cli`         | CLI commands: `init`, `add`, `lint`, `preview`, `render`, `transcribe`, `tts`, `doctor`   |
+| `gsap`                   | `/gsap`                    | GSAP animation — timelines, easing, stagger, ScrollTrigger, plugins, performance          |
+| `hyperframes-registry`   | `/hyperframes-registry`    | Installing catalog blocks/components via `npx hyperframes add <name>`                     |
+| `hyperframes-video-beats`| `/hyperframes-video-beats` | Overlay beats, paper takeovers, glass cards sobre o footage                               |
+| `video-storytelling`     | `/video-storytelling`      | Arco narrativo, mundo persistente, callbacks visuais                                      |
+| `style-library`          | `/style-library`           | Selecionar/estender estilos e templates (`style-templates/`, `registry.json`)             |
+| `website-to-hyperframes` | `/website-to-hyperframes`  | Turning a URL into a composition (7-step capture-to-video pipeline)                       |
+| `short-form-video`       | `/short-form-video`        | Manutenção dos exemplos May Shorts                                                        |
+| `make-a-video`           | `/make-a-video`            | Novo vídeo motion-graphics a partir de um brief                                           |
+| `media-use`              | `/media-use`               | Música, SFX (19 embutidos), voz, transcrição, grade/LUTs, ducking — HeyGen ou ferramentas locais grátis |
+| `motion-showreel`        | `/motion-showreel`         | Showreel/brand reel 10-30s cortado no grid de BPM (kit do Nate, set/2026) — usa Kie.ai/ElevenLabs pagos |
 
-Review Studio before draft rendering. Review the encoded draft, extract and
-inspect hero frames and transition boundaries, and listen to the audio joins.
-Check cropped faces, overflow, black flashes, readable labels, clipping, and A/V
-sync. Resolve problems before the final render. Save evidence in VERIFY.md.
-Use a Range-capable preview server for MP4 scrubbing (for example `npx serve`).
+Not present? Restaurar do git — **não** rodar `npx skills add` nem `npx hyperframes skills update` (ver "HyperFrames 0.9" abaixo).
 
-Honor approvals already provided. When review approval is missing, prepare the
-concrete preview or cut proposal first. Never claim a lint result proves visual
-quality. Only publish or upload a finished video when the user authorizes it.
-Automated browser checks must be headless, with Pointer Lock and cursor capture
-disabled; synthetic input must remain inside the virtual browser.
+## HyperFrames 0.9 (upgrade 06/11/2026)
 
-For short-form edits, read `docs/SHORT-FORM.md` and use the plan and footage
-validators. Structural checks supplement rendered video and audio review.
+- Pacote `hyperframes` **0.9.19**. Skills `hyperframes`, `hyperframes-cli`, `hyperframes-registry`, `media-use` são cópia da oficial v0.9.19 **sem a linha "Usage beacon"** (telemetria desligada: `npx hyperframes telemetry disable`). Por isso `hyperframes skills check` as marca como "outdated" — é esperado. **Nunca rodar `hyperframes skills update`, `hyperframes update` (atualiza CLI + skills juntos) nem `hyperframes skills` sem subcomando (instala tudo)**: reinstalam o beacon e sobrescrevem. A CLI sugere "skills update" em mensagens — ignorar. `npx hyperframes init` sempre com `--skip-skills`.
+- `gsap` e `website-to-hyperframes` não existem mais upstream; mantidas do kit (outras skills chamam pelo nome).
+- `reverse-any-video` e `style-sampling` (oficiais) **não instaladas**: são recurso HyperFrames Pro (pago).
+- Verificação: `npx hyperframes check` (lint + runtime + layout + motion + contraste + craft, num browser) substitui `animation-map.mjs`/`contrast-report.mjs`. Piso tipográfico do Craft: 28 px no lado curto de 1080.
+- Em shell não interativo (agente), `npx hyperframes preview` roda em background e devolve o terminal; `--status` / `--stop` controlam o servidor.
+- Render local: `--workers auto` (5 nesta máquina) + captura Chrome com GPU (`--browser-gpu` auto; o `--gpu` de encode segue desligado). O 041 caiu de 4m38s para 54s com o comando padrão `render --quality draft`, saída idêntica (mesmo LUFS, PSNR mín. 36 dB).
+- `scripts/preflight.mjs` acusa falso positivo `root_data_start_conflicts_with_video` — o `check` da 0.9 é a autoridade.
 
-## HyperFrames 0.9 (upgrade 2026-11-06)
+## video-use — Installation (one-time, Windows)
 
-- Package `hyperframes` is **0.9.19**. Skills `hyperframes`, `hyperframes-cli`, `hyperframes-registry`, `media-use` are the official v0.9.19 copies **without the "Usage beacon" line** (telemetry disabled). `hyperframes skills check` reports them "outdated" by design. **Never run `hyperframes skills update`, `hyperframes update` or bare `hyperframes skills`** — they reinstall the beacon and overwrite them. Always `hyperframes init --skip-skills`.
-- `gsap` and `website-to-hyperframes` no longer exist upstream; kept from the kit.
-- `reverse-any-video` and `style-sampling` are HyperFrames Pro (paid) and are not installed.
-- `npx hyperframes check` is the verification authority (replaces `animation-map.mjs` / `contrast-report.mjs`); `scripts/preflight.mjs` reports a false positive `root_data_start_conflicts_with_video`.
+```bash
+# Clone the tool (do NOT symlink on Windows)
+git clone https://github.com/browser-use/video-use C:/tools/video-use
+cd C:/tools/video-use
+pip install -e .
+
+# FFmpeg — required (winget or chocolatey)
+winget install --id=Gyan.FFmpeg -e
+
+# ElevenLabs API key (word-level transcription — billed per audio minute)
+cp .env.example .env   # then edit .env: ELEVENLABS_API_KEY=your_key
+```
+
+### video-use quick commands (run from inside `video-projects/<slug>/`)
+
+```bash
+# Transcribe raw footage (cached — safe to re-run)
+python C:/tools/video-use/helpers/transcribe.py raw.mp4 --language pt
+
+# Pack transcript for LLM reasoning
+python C:/tools/video-use/helpers/pack_transcripts.py --edit-dir edit
+
+# Render EDL (after strategy confirmed — never --build-subtitles)
+python C:/tools/video-use/helpers/render.py edit/edit.json -o edit/final.mp4
+
+# Visual inspection of a cut range (generates filmstrip+waveform PNG)
+python C:/tools/video-use/helpers/timeline_view.py raw.mp4 --start 12 --end 20 --transcript edit/transcripts/raw.json
+
+# Hand off clean edit to HyperFrames assets
+ffmpeg -i edit/final.mp4 -c:v libx264 -preset medium -crf 20 -c:a aac -b:a 192k -movflags +faststart assets/edited.mp4
+```
+
+## Commands
+
+```bash
+# Authoring loop
+npx hyperframes preview                          # Studio opens in browser with hot reload (port 3002)
+npx hyperframes lint                             # static HTML check — always run before rendering
+npx hyperframes compositions                     # list comp IDs + resolved durations
+npx hyperframes render --quality draft --output renders/draft.mp4   # fast iteration render
+npx hyperframes render --quality standard --output renders/final.mp4 # visually lossless 1080p
+
+# Catalog & install
+npx hyperframes catalog --type block             # browse 38 blocks
+npx hyperframes catalog --type component         # browse 3 components
+npx hyperframes add <name>                       # install a catalog item into compositions/
+
+# Media pipeline (baked into CLI — no Whisper CLI needed)
+npx hyperframes transcribe <file> --model small.en --json   # word-level timestamps
+npx hyperframes tts "text" --voice am_adam --output narration.wav   # on-device Kokoro-82M
+
+# Diagnostics
+npx hyperframes doctor                           # env check (Node, FFmpeg, Chrome, Docker)
+npx hyperframes info --json                      # project stats
+npx hyperframes benchmark                        # find optimal workers/quality
+npx hyperframes docs <topic>                     # inline docs: data-attributes, gsap, rendering, examples, troubleshooting, compositions
+```
+
+### Render flags worth knowing
+
+- `--quality draft|looks|delivery|standard|high` — 0.9: `looks` is the default (CRF 16), `delivery` = high; `draft` for iteration
+- `--fps 24|30|60` (default 30)
+- `--format mp4|mov|webm` — `mov` = ProRes 4444 with alpha, `webm` = VP9 alpha (Chromium only)
+- `--workers <n>` / `--gpu` / `--docker` / `--crf <n>` / `--video-bitrate 10M`
+- `--max-concurrent-renders <n>` — when running the producer server
+
+## Workspace Layout
+
+```
+Hyperframes Editor/
+├── CLAUDE.md, AGENTS.md, DESIGN.studio.md               ← workspace docs
+├── MOTION_PHILOSOPHY.md                    ← gold-standard motion-graphics aesthetic (READ before brainstorming)
+├── package.json, node_modules/              ← workspace tooling
+├── .claude/                                  ← skills + plugin config
+├── assets/                                   ← shared assets (AIS brand, music)
+└── video-projects/                           ← one folder per video
+    ├── aisoc-hype/
+    ├── aisoc-lesson-5-1/
+    ├── may-shorts-19/
+    └── clickup-demo/
+```
+
+Each project under `video-projects/<name>/` is a self-contained Hyperframes project:
+
+- `index.html` — root composition entry point
+- `compositions/` — sub-compositions loaded via `data-composition-src`
+  - `compositions/components/` — shared snippets installed by `npx hyperframes add <component>`
+- `assets/` — media files for this project (videos, audio, images, SVG, transcripts). Brand assets that multiple projects need (AIS logo, brand-tokens.css) are duplicated per-project, not symlinked — keeps each project portable.
+- `renders/` — render outputs for this project (gitignored)
+- `hyperframes.json` — CLI config (registry URL, paths — all relative to the project folder)
+- `meta.json` — project metadata (id, name, dimensions, fps)
+- (optional) `STORYBOARD.md`, `scripts/`, etc. — anything project-specific
+
+### Always run the CLI from inside the project folder
+
+```bash
+cd video-projects/may-shorts-19
+npx hyperframes lint
+npx hyperframes preview
+npx hyperframes render --quality standard --output renders/final.mp4
+```
+
+The CLI reads `hyperframes.json`/`meta.json` from the current directory and resolves `assets/`, `compositions/`, `renders/` relative to it. Running it from the workspace root will fail or scan the wrong files.
+
+### Adding a new video project
+
+1. `mkdir video-projects/<new-project-slug>` (kebab-case, e.g. `q3-launch-promo`)
+2. `cd video-projects/<new-project-slug>`
+3. Either `npx hyperframes init --skip-skills` to scaffold (always `--skip-skills`, see "HyperFrames 0.9"), or copy the structure from a sibling project (`cp -r ../may-shorts-19/{hyperframes.json,meta.json} .` then edit `meta.json` for the new id/name/dimensions, and create empty `index.html`, `compositions/`, `assets/`, `renders/`)
+4. Pull in any shared brand assets the project needs (e.g. `cp ../../assets/brand-tokens.css assets/`; add client logo to `assets/` manually)
+5. Build the composition; lint + render from inside this folder
+
+### What lives at the workspace root
+
+- **Motion-graphics philosophy:** `MOTION_PHILOSOPHY.md` (gold-standard aesthetic, deconstructed Infinite Payments spot — read before brainstorming any composition)
+- Shared brand source-of-truth: `DESIGN.studio.md` (generic studio brand spec; create `DESIGN.<client>.md` per project/client), root `assets/` (brand-tokens.css) — copy into a project's `assets/` when needed
+- Shared raw-recording stash: large source MP4s/MP3s that aren't yet assigned to a project (e.g. raw lesson recordings, license-free music) can sit at root until they're moved into a project's `assets/`
+- Tooling: `node_modules/`, `package.json`, `.claude/`, `.gitignore`, `skills-lock.json`
+
+## Render Contract (the must-dos and must-not-dos)
+
+1. Root `<div>` needs `id`, `data-composition-id`, `data-start="0"`, `data-width`, `data-height`.
+2. Timed visible elements need `class="clip"` — **except** `<video>` and `<audio>` (adding `class="clip"` to `<video>` breaks it).
+3. Every timed element needs `data-start`, `data-duration`, `data-track-index`.
+4. `data-start` can reference another clip's id: `data-start="intro"`, `data-start="intro + 2"`, `data-start="intro - 0.5"`. Same-track clips cannot overlap — use different `data-track-index` values.
+5. `<video>` must be `muted`; audio belongs in sibling `<audio>` elements for the mixer. `data-has-audio="true"` only when the video's own audio should feed the mix.
+6. Every composition registers exactly one GSAP timeline, paused, on `window.__timelines["<data-composition-id>"]`. Key must match `data-composition-id` exactly.
+7. Composition duration = `tl.duration()`. If the timeline is shorter than the video, the video truncates. Pad with `tl.set({}, {}, <seconds>)` to extend.
+8. Never call `.play()`, `.pause()`, or set `.currentTime` on media. The framework owns playback.
+9. Never animate `width`/`height`/`top`/`left` directly on a `<video>` — the browser freezes frames. Wrap in a `<div>` and animate the wrapper.
+10. Sub-compositions use `<template>` + `data-composition-src`. Their timelines auto-link to the parent — never do `masterTL.add(child)`.
+11. Determinism: no `Date.now()`, no unseeded `Math.random()`, no render-time network fetches. Use seeded PRNGs.
+
+## Authoring Loop
+
+1. **Read `MOTION_PHILOSOPHY.md`** if you haven't this session — it sets the aesthetic baseline (1–2s scenes, chrome type, motion-blur transitions, etc.).
+2. Pick the skill → invoke `/hyperframes` (or sibling) before editing.
+3. Edit HTML in `index.html` or `compositions/<name>.html`.
+4. `npx hyperframes lint` — fix errors, triage warnings.
+5. **Localhost Studio preview** — before **any** render (even a draft), start `npx hyperframes preview` in the background and open the Studio URL. Eyeball the edit live and iterate; no render cycle until the preview is approved. See "Localhost Preview Before Any Render" below.
+6. Only after the live preview looks right: `render --quality draft` for a draft MP4.
+7. **Visual verification** (REQUIRED before handoff) — see "Visual Verification" below.
+8. **Run the `MOTION_PHILOSOPHY.md` pre-flight checklist** (section 4) before claiming done.
+9. Second localhost preview pass on the draft MP4 (via static server on port 8080 for scrubbable playback) — wait for explicit sign-off before the final render.
+10. Final: `render --quality standard` (or `high --docker` for archival deterministic output).
+
+## Visual Verification (MANDATORY before delivery)
+
+Lint passing ≠ design working. Never declare a render done until you have actually looked at the frames. No exceptions. A "successful" render with a cropped face, misaligned text, or a scene landing on the wrong word is a broken render — and lint exit codes will not catch any of that. Treat skipping visual verification as a regression.
+
+**Required checks before delivery:**
+
+1. Render a draft: `npx hyperframes render --quality draft --output renders/<name>-draft.mp4`
+2. Pull one frame per scene at its hero moment, plus frames at any mid-entrance or transition at risk. Cover the full timeline — don't cherry-pick.
+   ```bash
+   mkdir -p renders/frames
+   for t in <scene1-t> <scene2-t> ...; do
+     ffmpeg -y -ss $t -i renders/<name>-draft.mp4 -frames:v 1 -q:v 2 "renders/frames/t${t}.png"
+   done
+   ```
+3. Call `Read` on every PNG so the image actually loads into context. Do NOT just list filenames. Verify:
+   - Speaker's face is not cropped in any bottom-half scene
+   - Full-screen vs bottom-half face mode is correct for each scene
+   - Scene transitions land on the intended word
+   - Captions are on-brand (per project's `DESIGN.<client>.md` or `DESIGN.studio.md`) and readable
+   - No text overflow, no unintentional overlap, no blank frames
+4. If anything is wrong — fix, re-render, re-verify. Never ship a broken render.
+5. Only then run the `standard` quality render and report the path.
+
+**Pre-render (live scrubbing):** Playwright 1.59.1 is installed. For quick contrast/layout checks on a single scene mid-authoring without paying a full render, run `npx hyperframes preview` (opens on localhost:3002) and drive Playwright to screenshot the live state at specific timestamps. Useful when iterating on one scene's visual balance before committing to a draft render.
+
+## Localhost Preview Before Any Render (MANDATORY)
+
+**Every edit pass gets two preview gates**: one on the live Studio **before** any render (cheap iterations without waiting for a render), and one on the rendered MP4 **before** the final `--quality standard` bake. Do not run `render --quality draft` OR `render --quality standard` until the relevant state has been reviewed in-browser.
+
+### Gate 1 — Live Studio preview (before any render)
+
+After editing compositions and before any render command:
+
+1. Start Studio in the background:
+   ```bash
+   cd video-projects/<project-slug>
+   npx hyperframes preview    # run_in_background: true
+   ```
+2. Wait for "Studio running" on http://localhost:3002.
+3. Open the Studio URL and note which sub-compositions to scrub (individual comp URLs load fastest — the master composition can stall when it includes WebGL shader blocks under software WebGL fallback). Example: `http://localhost:3002/?comp=v01-kinetic-type`.
+4. Wait for explicit sign-off on the live preview ("looks good, render a draft" / "ship it" / "go ahead"). Silence is not approval.
+5. Hot reload means any further edit you make shows up live without a restart.
+
+### Gate 2 — Rendered MP4 preview (before final)
+
+After frame-verification passes on a draft render:
+
+6. Serve `renders/` via `npx serve . -p 8080 -n` (NOT Python's `http.server` — it doesn't support HTTP Range requests, so scrubbing breaks). Review at `http://localhost:8080/<project>-draft.mp4`.
+7. Wait for explicit sign-off on the full motion + audio playback.
+8. Then run the final `--quality standard` render; report the output path.
+
+Why two gates: the live Studio catches layout/timing/visual bugs on edits you just made — before spending ~2 minutes per render iteration. The rendered-MP4 gate catches pacing, audio sync, and beat-to-beat feel that only reads correctly in real-time playback. Skipping either one turns render cycles into expensive guesses.
+
+**If the master composition stalls in Studio** (software WebGL + multiple shader blocks): use individual sub-composition URLs instead. They load instantly and isolate the change you're previewing.
+
+The render is the ground truth. "The code looks correct" doesn't clear the bar.
+
+## Asset Prep
+
+Re-encode raw recordings to H.264 MP4 before referencing as `<video src>`:
+
+```bash
+ffmpeg -i raw.mov -c:v libx264 -preset medium -crf 20 -c:a aac -b:a 192k -movflags +faststart assets/clip.mp4
+```
+
+Keeps `assets/` light and avoids codec issues during capture. Use `npx hyperframes doctor` if a render fails partway.
+
+## Prompting Shorthand (what the `/hyperframes` skill understands)
+
+- **Motion easing:** smooth / snappy / bouncy / springy / dramatic / dreamy
+- **Caption energy:** hype / corporate / tutorial / storytelling / social
+- **Transition energy:** calm (blur) / medium (push) / high (zoom, glitch)
+- **Audio reactivity:** bass→scale, treble→glow, amplitude→opacity, mids→shape. Keep text reactivity at 3–6%; backgrounds can go 10–30%.
+
+Cold-start prompt shape: *"Using /hyperframes, create a 10-second product intro with a fade-in title over a dark background and subtle background music."* Warm-start: *"Summarize this PDF into a 45-second pitch video using /hyperframes."*
+
+## Registry (available via `npx hyperframes add <name>`)
+
+- **Blocks (lista histórica da 0.7 — na 0.9 são ~450 itens; buscar com `npx hyperframes catalog --query "<efeito>" --json`):** data viz (`data-chart`, `flowchart`), outros (`logo-outro`), social overlays (`instagram-follow`, `tiktok-follow`, `yt-lower-third`, `x-post`, `reddit-post`, `spotify-card`, `macos-notification`), app/UI (`app-showcase`, `ui-3d-reveal`), shader transitions (`glitch`, `whip-pan`, `cinematic-zoom`, `flash-through-white`, `light-leak`, `ripple-waves`, `chromatic-radial-split`, `cross-warp-morph`, `domain-warp-dissolve`, `gravitational-lens`, `ridged-burn`, `sdf-iris`, `swirl-vortex`, `thermal-distortion`), CSS transition packs (`transitions-3d|blur|cover|destruction|dissolve|distortion|grid|light|mechanical|other|push|radial|scale`)
+- **Components (3):** `grain-overlay`, `shimmer-sweep`, `grid-pixelate-wipe`
+- Browse: `npx hyperframes catalog --type block --json`
+
+## Documentation — fetch when the skills don't cover enough
+
+The `/hyperframes*` skills encode the common authoring patterns, but the hosted docs are the source of truth for **every block's props, every package's API, and deeper usage examples**. Reach for them when brainstorming scenes, picking a transition or component, or digging into a package you haven't used before. The catalog pages in particular hide a lot of gems — don't guess at a block's props, fetch the page.
+
+**Entry points:**
+
+- **Agent index (fetch first if unsure of a path):** https://hyperframes.heygen.com/llms.txt — the complete sitemap
+- **Full site:** https://hyperframes.heygen.com/introduction
+- **Inline terminal docs:** `npx hyperframes docs <topic>` — topics: `data-attributes`, `gsap`, `rendering`, `examples`, `troubleshooting`, `compositions`
+- **Source repo:** https://github.com/heygen-com/hyperframes
+
+**Known URL patterns (hit directly with WebFetch):**
+
+- **Catalog — Blocks (38):** `https://hyperframes.heygen.com/catalog/blocks/<slug>` — e.g. `instagram-follow`, `flowchart`, `data-chart`, `cinematic-zoom`, `glitch`, `whip-pan`, `sdf-iris`, `light-leak`, `logo-outro`, `app-showcase`, `ui-3d-reveal`, `macos-notification`, plus all the transition packs (`transitions-3d`, `transitions-blur`, …). Full props + examples for each.
+- **Catalog — Components (3):** `https://hyperframes.heygen.com/catalog/components/<slug>` — `grain-overlay`, `grid-pixelate-wipe`, `shimmer-sweep`
+- **Packages:** `https://hyperframes.heygen.com/packages/<name>` — `cli`, `core`, `engine`, `player`, `producer`, `studio`. Use when scripting beyond HTML (e.g. batch rendering via producer, player runtime hooks).
+- **Reference:** `https://hyperframes.heygen.com/reference/html-schema` — authoritative data-attribute + timeline-registration spec
+- **Core concepts & guides:** listed in `llms.txt` — covers compositions, deterministic rendering, frame adapters, GSAP animation, prompt guide, website-to-video, troubleshooting, common mistakes. Fetch `llms.txt` to resolve exact paths.
+
+**When to reach for this:** brainstorming a new scene ("what block could sell this beat?"), looking up a block's exact props before wiring it into a composition, deep-diving into a package API, or debugging something the render contract doesn't explain.
+## Kit nativo de edição (upstream set/2026)
+
+O merge trouxe o pipeline de edição do Nate como skills/scripts nativos — **alternativa B ao video-use no Stage 1** (mesma função: MP4 limpo + transcrição word-level pro Stage 2):
+
+- `npm run new-video -- <slug>` — cria projeto com estrutura completa
+- Ordem dos cortes: `cut-silences` primeiro → usa o vídeo E a transcrição retimada no `cut-mistakes` → decisões revisadas ficam em `approved-cuts.json` → `apply-cuts` aplica
+- Revisar cada erro no contexto. Repetição intencional não é erro. Sem cortes necessários: preservar o input ou usar lista de cortes vazia. Nunca misturar timestamps originais com footage editado
+- Preservar o raw. Cada etapa de edição grava num arquivo de saída novo; trabalho obsoleto é arquivado, não sobrescrito. Os utilitários de `scripts/` aceitam caminhos relativos ao diretório atual
+- Validação: `node scripts/preflight.mjs <proj>` + `node scripts/validate-beat-sync.mjs <proj>` (beats ancorados: `data-anchor` com frase exata da transcrição; entrada entre 0,2s depois e 1,8s antes da palavra). Timelines inline (sem `data-anchor`) exigem revisão manual de timing
+- Revisão do draft, além dos frames: ouvir as emendas de áudio; checar rosto cortado, overflow, flash preto, labels legíveis, clipping e sincronia A/V. Evidência salva em `VERIFY.md` do projeto
+- Docs: `docs/WORKFLOW.md` (edição completa), `docs/SHORT-FORM.md` + `docs/EDITING-PLAYBOOK.md` (reels/ads — house style medido do Nate e lições; o brief do cliente vence), `docs/TOOLS-AND-API-KEYS.md` (**ler antes de escolher** serviço de transcrição/geração/voz — ElevenLabs Scribe é default do Nate; honrar pedidos por Whisper local ou outro provedor). O script de transcrição incluído é só ElevenLabs; normalizar timestamps verificados antes dos cortes. Kie.ai é opcional e exige integração configurada + créditos. Reusar transcripts/assets existentes; tornar explícito qualquer upload não aprovado ou chamada paga antes de executar
+- Short-form: usar os validators de plano e footage (`npm run validate:short-form`, `npm run validate:footage`) — checagem estrutural complementa, não substitui, a revisão do vídeo e do áudio renderizados
+- Style library: `style-library/registry.json` indexa os cards (cada estilo tem DESIGN.md, tokens CSS e slots de texto nomeados); templates de cena inteira em `style-templates/README.md`
+
+### Aprovações
+
+Honrar aprovações já dadas. Sem aprovação de revisão: preparar primeiro o preview concreto ou a proposta de cortes. Lint passando nunca prova qualidade visual. Publicar ou fazer upload de vídeo pronto só com autorização explícita. Checagens automatizadas de navegador rodam headless, com Pointer Lock e captura de cursor desligados; input sintético fica dentro do navegador virtual.
+
+### Runtime routing
+
+`AGENTS.md` é **cópia exata** deste `CLAUDE.md` (o `check-kit` falha se divergirem): editar só o `CLAUDE.md` e copiar por cima (`cp CLAUDE.md AGENTS.md`). Skills canônicas vivem em `.claude/skills/`; `npm run sync:skills` gera `.agents/skills/` (Codex). `$edit-video` no Codex = `/edit-video` no Claude Code. Modelo e permissões são escolha do usuário; `.codex/config.toml` só adiciona defaults de carregamento de documentos. Trabalhar localmente, sem subagentes, salvo pedido do usuário.
+
+### Privacidade
+
+Os 12 projetos públicos do kit são exemplos de ensino — **não** adicionar footage pessoal/de cliente neles, nem copiar mídia privada para exemplos da biblioteca. Projetos privados novos ficam gitignored. Nunca printar secrets.
+
+## MOTION_PHILOSOPHY vs brief do projeto
+
+A filosofia (fast sizzle pacing) é **referência de estilo**, não lei: conteúdo educacional precisa de respiro. O brief do projeto controla pacing, paleta e tipografia. Contratos de skill do framework sobrepõem receitas históricas do style guide.
