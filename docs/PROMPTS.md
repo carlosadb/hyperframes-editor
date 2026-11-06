@@ -17,6 +17,16 @@ the speaker readable. Follow the project's DESIGN.md.
 **Verify:** Inspect the actual rendered MP4, its transition frames, and its audio
 joins. Fix visible defects and write VERIFY.md with evidence and limitations.
 
+**Showreel:** Use motion-showreel to build a 15-second showreel for [brand] from
+[music or reference]. Measure the beat grid first, map six or seven chapters to the
+brand's own objects, and show me the storyboard and beat sheet before building.
+
+**Showreel (studio, pt-BR):** Use motion-showreel para um showreel de 15 s da
+[marca] com a trilha licenciada em [caminho]. Meça o beat grid primeiro, mapeie
+seis ou sete capítulos para objetos da própria marca e me mostre o storyboard e o
+beat sheet antes de construir. Não gere música, SFX, imagens ou vídeo pagos
+(Kie.ai, ElevenLabs) sem antes me mostrar o custo estimado.
+
 ## A reel with a clear payoff
 
 > Use short-form-edit to create a 9:16 reel from [local recording]. Explore three
