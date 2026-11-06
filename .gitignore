@@ -42,3 +42,11 @@ Thumbs.db
 !examples/showcase/curiosity-reel-2.mp4
 !examples/showcase/curiosity-reel-1.mp4
 !examples/showcase/ais-live-ad.mp4
+
+# Vendored HeyGen skills (v0.9.19)
+!.claude/skills/hyperframes/assets/
+!.claude/skills/media-use/audio/assets/
+!.agents/skills/hyperframes/assets/
+!.agents/skills/media-use/audio/assets/
+!.claude/skills/media-use/audio/assets/sfx/*.mp3
+!.agents/skills/media-use/audio/assets/sfx/*.mp3
