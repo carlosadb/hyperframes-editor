@@ -1,4 +1,4 @@
 HyperFrames skill ecosystem, HeyGen, Inc.
-Source: https://github.com/heygen-com/hyperframes
+Source: https://github.com/heygen-com/hyperframes (v0.9.19)
 Apache-2.0; see licenses/HYPERFRAMES-LICENSE at kit root.
-Student-kit adaptations: runtime-relative skill paths and portable packaging.
+Local adaptation: usage-beacon line removed (telemetry disabled in this studio).

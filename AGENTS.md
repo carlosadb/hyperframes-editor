@@ -100,3 +100,10 @@ disabled; synthetic input must remain inside the virtual browser.
 
 For short-form edits, read `docs/SHORT-FORM.md` and use the plan and footage
 validators. Structural checks supplement rendered video and audio review.
+
+## HyperFrames 0.9 (upgrade 2026-11-06)
+
+- Package `hyperframes` is **0.9.19**. Skills `hyperframes`, `hyperframes-cli`, `hyperframes-registry`, `media-use` are the official v0.9.19 copies **without the "Usage beacon" line** (telemetry disabled). `hyperframes skills check` reports them "outdated" by design. **Never run `hyperframes skills update`** — it reinstalls the beacon and overwrites them.
+- `gsap` and `website-to-hyperframes` no longer exist upstream; kept from the kit.
+- `reverse-any-video` and `style-sampling` are HyperFrames Pro (paid) and are not installed.
+- `npx hyperframes check` is the verification authority (replaces `animation-map.mjs` / `contrast-report.mjs`); `scripts/preflight.mjs` reports a false positive `root_data_start_conflicts_with_video`.

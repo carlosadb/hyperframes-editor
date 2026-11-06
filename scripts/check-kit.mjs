@@ -15,6 +15,11 @@ const publicMedia = new Set([
   'examples/showcase/curiosity-reel-1.mp4',
   'examples/showcase/ais-live-ad.mp4',
 ]);
+// Vendored HeyGen skills (v0.9.19, copied verbatim): their Pixabay-licensed SFX
+// (see media-use/audio/assets/sfx/CREDITS.md) and test fixtures with fake
+// /home paths are upstream content, not private material. Credential scan still applies.
+const vendoredSkill = /^\.(claude|agents)\/skills\/(hyperframes|hyperframes-cli|hyperframes-registry|media-use)\//;
+const vendoredSfx = /^\.(claude|agents)\/skills\/media-use\/audio\/assets\/sfx\/[^/]+\.mp3$/;
 if (!readFileSync(join(root,'AGENTS.md')).equals(readFileSync(join(root,'CLAUDE.md')))) fail('Root instruction files differ');
 const sync = spawnSync(process.execPath, [join(root,'scripts/sync-codex-skills.mjs'),'--check'], {encoding:'utf8'});
 if (sync.status !== 0) fail(sync.stdout + sync.stderr);
@@ -42,12 +47,12 @@ for (const style of registry.styles) for (const card of style.cards) {
 if (cards !== registry.cardCount) fail('Registry count is stale');
 for (const p of files) {
   const rel = relative(root,p).replaceAll('\\','/');
-  if (/\.(mp4|mov|wav|mp3|m4a|zip|pyc|pem|key)$/i.test(p) && !publicMedia.has(rel)) fail(`Private/binary material in distribution: ${rel}`);
+  if (/\.(mp4|mov|wav|mp3|m4a|zip|pyc|pem|key)$/i.test(p) && !publicMedia.has(rel) && !vendoredSfx.test(rel)) fail(`Private/binary material in distribution: ${rel}`);
   const bytes=readFileSync(p); if(bytes.includes(0)) continue;
   const text=bytes.toString('utf8');
   // Report locations, never the value of a suspected credential.
   if (/(?:sk-[A-Za-z0-9]{20,}|gh[pous]_[A-Za-z0-9]{20,}|-----BEGIN [A-Z ]*PRIVATE KEY)/.test(text)) fail(`Possible credential: ${rel}`);
-  if (/(?:[A-Z]:[\\/](?:Users|home)[\\/]|\/Users\/|\/home\/[a-z])/.test(text)) fail(`Machine-specific path: ${rel}`);
+  if (!vendoredSkill.test(rel) && /(?:[A-Z]:[\\/](?:Users|home)[\\/]|\/Users\/|\/home\/[a-z])/.test(text)) fail(`Machine-specific path: ${rel}`);
   if (/\.(mjs|js)$/.test(p)) {
     const check=spawnSync(process.execPath,['--check',p],{encoding:'utf8'});
     if(check.status !== 0) fail(`Syntax error: ${rel}\n${check.stderr}`);

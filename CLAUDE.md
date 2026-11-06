@@ -76,8 +76,20 @@ raw.mov / raw.mp4
 | `website-to-hyperframes` | `/website-to-hyperframes`  | Turning a URL into a composition (7-step capture-to-video pipeline)                       |
 | `short-form-video`       | `/short-form-video`        | Manutenção dos exemplos May Shorts                                                        |
 | `make-a-video`           | `/make-a-video`            | Novo vídeo motion-graphics a partir de um brief                                           |
+| `media-use`              | `/media-use`               | Música, SFX (19 embutidos), voz, transcrição, grade/LUTs, ducking — HeyGen ou ferramentas locais grátis |
+| `motion-showreel`        | `/motion-showreel`         | Showreel/brand reel 10-30s cortado no grid de BPM (kit do Nate, set/2026) — usa Kie.ai/ElevenLabs pagos |
 
-Not present? `npx skills add heygen-com/hyperframes --yes` then reopen this directory.
+Not present? Restaurar do git — **não** rodar `npx skills add` nem `npx hyperframes skills update` (ver "HyperFrames 0.9" abaixo).
+
+## HyperFrames 0.9 (upgrade 06/11/2026)
+
+- Pacote `hyperframes` **0.9.19**. Skills `hyperframes`, `hyperframes-cli`, `hyperframes-registry`, `media-use` são cópia da oficial v0.9.19 **sem a linha "Usage beacon"** (telemetria desligada: `npx hyperframes telemetry disable`). Por isso `hyperframes skills check` as marca como "outdated" — é esperado. **Nunca rodar `hyperframes skills update`**: reinstala o beacon e sobrescreve.
+- `gsap` e `website-to-hyperframes` não existem mais upstream; mantidas do kit (outras skills chamam pelo nome).
+- `reverse-any-video` e `style-sampling` (oficiais) **não instaladas**: são recurso HyperFrames Pro (pago).
+- Verificação: `npx hyperframes check` (lint + runtime + layout + motion + contraste + craft, num browser) substitui `animation-map.mjs`/`contrast-report.mjs`. Piso tipográfico do Craft: 28 px no lado curto de 1080.
+- `npx hyperframes preview` agora roda como daemon (devolve o terminal); parar com `npx hyperframes preview <dir> --stop`.
+- Render local usa 5 workers + GPU: o 041 caiu de 4m38s para 54s, saída idêntica (mesmo LUFS, PSNR mín. 36 dB).
+- `scripts/preflight.mjs` acusa falso positivo `root_data_start_conflicts_with_video` — o `check` da 0.9 é a autoridade.
 
 ## video-use — Installation (one-time, Windows)
 
@@ -305,7 +317,7 @@ Cold-start prompt shape: *"Using /hyperframes, create a 10-second product intro 
 
 ## Registry (available via `npx hyperframes add <name>`)
 
-- **Blocks (38):** data viz (`data-chart`, `flowchart`), outros (`logo-outro`), social overlays (`instagram-follow`, `tiktok-follow`, `yt-lower-third`, `x-post`, `reddit-post`, `spotify-card`, `macos-notification`), app/UI (`app-showcase`, `ui-3d-reveal`), shader transitions (`glitch`, `whip-pan`, `cinematic-zoom`, `flash-through-white`, `light-leak`, `ripple-waves`, `chromatic-radial-split`, `cross-warp-morph`, `domain-warp-dissolve`, `gravitational-lens`, `ridged-burn`, `sdf-iris`, `swirl-vortex`, `thermal-distortion`), CSS transition packs (`transitions-3d|blur|cover|destruction|dissolve|distortion|grid|light|mechanical|other|push|radial|scale`)
+- **Blocks (lista histórica da 0.7 — na 0.9 são ~450 itens; buscar com `npx hyperframes catalog --query "<efeito>" --json`):** data viz (`data-chart`, `flowchart`), outros (`logo-outro`), social overlays (`instagram-follow`, `tiktok-follow`, `yt-lower-third`, `x-post`, `reddit-post`, `spotify-card`, `macos-notification`), app/UI (`app-showcase`, `ui-3d-reveal`), shader transitions (`glitch`, `whip-pan`, `cinematic-zoom`, `flash-through-white`, `light-leak`, `ripple-waves`, `chromatic-radial-split`, `cross-warp-morph`, `domain-warp-dissolve`, `gravitational-lens`, `ridged-burn`, `sdf-iris`, `swirl-vortex`, `thermal-distortion`), CSS transition packs (`transitions-3d|blur|cover|destruction|dissolve|distortion|grid|light|mechanical|other|push|radial|scale`)
 - **Components (3):** `grain-overlay`, `shimmer-sweep`, `grid-pixelate-wipe`
 - Browse: `npx hyperframes catalog --type block --json`
 
