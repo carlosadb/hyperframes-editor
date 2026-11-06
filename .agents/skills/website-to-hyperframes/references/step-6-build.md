@@ -82,10 +82,10 @@ Every visible element must have continuous motion. A still image on a still back
 Check the storyboard's transition specification for this beat:
 
 - **CSS transition**: implement the exit animation (e.g., `y:-150, blur:30px, 0.33s power2.in`). The next composition handles its own entry.
-- **Shader transition**: no exit animation needed — the shader handles the blend. Read `skills/hyperframes/references/transitions/shader-setup.md` for the full WebGL boilerplate and `skills/hyperframes/references/transitions/shader-transitions.md` for the fragment shader. Copy the FULL boilerplate — a simplified version produces black screens.
+- **Shader transition**: no exit animation needed — the shader handles the blend. Install the shader block from the registry (`npx hyperframes add <name>`, see `/hyperframes-registry`) and mount it as printed by `add`. Do not hand-write or simplify the WebGL boilerplate — a simplified version produces black screens.
 - **Hard cut**: no exit animation. The scene simply ends.
 
-For all CSS transition types and their GSAP implementations, read `skills/hyperframes/references/transitions/catalog.md`.
+For CSS transition types and their GSAP implementations, read `../../hyperframes/references/motion.md` ("Transitions with a cause") and browse `npx hyperframes catalog --tag transition --json`.
 
 ### 7. Asset cross-reference
 
@@ -114,13 +114,13 @@ After building the composition, check WITH ACTUAL CODE:
 - [ ] Timeline registered: `window.__timelines["comp-id"] = tl`
 - [ ] Colors match DESIGN.md exactly (paste the HEX value, don't approximate)
 
-**If `skills/hyperframes-animation-map/` is installed**, run it:
+Run the HyperFrames check (replaces the old animation-map script in 0.9):
 
 ```bash
-node skills/hyperframes-animation-map/scripts/animation-map.mjs <composition-dir>
+npx hyperframes check --at-transitions
 ```
 
-Read the summaries. Fix every flag: offscreen, collision, invisible, pacing issues.
+Read the report. Fix every Layout, Motion, Contrast and Craft finding (offscreen, collision, invisible, pacing, type below floor).
 
 ### 9. Move to the next composition
 

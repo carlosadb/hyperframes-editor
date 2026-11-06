@@ -76,8 +76,20 @@ raw.mov / raw.mp4
 | `website-to-hyperframes` | `/website-to-hyperframes`  | Turning a URL into a composition (7-step capture-to-video pipeline)                       |
 | `short-form-video`       | `/short-form-video`        | Manutenção dos exemplos May Shorts                                                        |
 | `make-a-video`           | `/make-a-video`            | Novo vídeo motion-graphics a partir de um brief                                           |
+| `media-use`              | `/media-use`               | Música, SFX (19 embutidos), voz, transcrição, grade/LUTs, ducking — HeyGen ou ferramentas locais grátis |
+| `motion-showreel`        | `/motion-showreel`         | Showreel/brand reel 10-30s cortado no grid de BPM (kit do Nate, set/2026) — usa Kie.ai/ElevenLabs pagos |
 
-Not present? `npx skills add heygen-com/hyperframes --yes` then reopen this directory.
+Not present? Restaurar do git — **não** rodar `npx skills add` nem `npx hyperframes skills update` (ver "HyperFrames 0.9" abaixo).
+
+## HyperFrames 0.9 (upgrade 06/11/2026)
+
+- Pacote `hyperframes` **0.9.19**. Skills `hyperframes`, `hyperframes-cli`, `hyperframes-registry`, `media-use` são cópia da oficial v0.9.19 **sem a linha "Usage beacon"** (telemetria desligada: `npx hyperframes telemetry disable`). Por isso `hyperframes skills check` as marca como "outdated" — é esperado. **Nunca rodar `hyperframes skills update`, `hyperframes update` (atualiza CLI + skills juntos) nem `hyperframes skills` sem subcomando (instala tudo)**: reinstalam o beacon e sobrescrevem. A CLI sugere "skills update" em mensagens — ignorar. `npx hyperframes init` sempre com `--skip-skills`.
+- `gsap` e `website-to-hyperframes` não existem mais upstream; mantidas do kit (outras skills chamam pelo nome).
+- `reverse-any-video` e `style-sampling` (oficiais) **não instaladas**: são recurso HyperFrames Pro (pago).
+- Verificação: `npx hyperframes check` (lint + runtime + layout + motion + contraste + craft, num browser) substitui `animation-map.mjs`/`contrast-report.mjs`. Piso tipográfico do Craft: 28 px no lado curto de 1080.
+- Em shell não interativo (agente), `npx hyperframes preview` roda em background e devolve o terminal; `--status` / `--stop` controlam o servidor.
+- Render local: `--workers auto` (5 nesta máquina) + captura Chrome com GPU (`--browser-gpu` auto; o `--gpu` de encode segue desligado). O 041 caiu de 4m38s para 54s com o comando padrão `render --quality draft`, saída idêntica (mesmo LUFS, PSNR mín. 36 dB).
+- `scripts/preflight.mjs` acusa falso positivo `root_data_start_conflicts_with_video` — o `check` da 0.9 é a autoridade.
 
 ## video-use — Installation (one-time, Windows)
 
@@ -141,7 +153,7 @@ npx hyperframes docs <topic>                     # inline docs: data-attributes,
 
 ### Render flags worth knowing
 
-- `--quality draft|standard|high` — CRF 28 / 18 / 15 (standard is visually lossless at 1080p)
+- `--quality draft|looks|delivery|standard|high` — 0.9: `looks` is the default (CRF 16), `delivery` = high; `draft` for iteration
 - `--fps 24|30|60` (default 30)
 - `--format mp4|mov|webm` — `mov` = ProRes 4444 with alpha, `webm` = VP9 alpha (Chromium only)
 - `--workers <n>` / `--gpu` / `--docker` / `--crf <n>` / `--video-bitrate 10M`
@@ -189,7 +201,7 @@ The CLI reads `hyperframes.json`/`meta.json` from the current directory and reso
 
 1. `mkdir video-projects/<new-project-slug>` (kebab-case, e.g. `q3-launch-promo`)
 2. `cd video-projects/<new-project-slug>`
-3. Either `npx hyperframes init` to scaffold, or copy the structure from a sibling project (`cp -r ../may-shorts-19/{hyperframes.json,meta.json} .` then edit `meta.json` for the new id/name/dimensions, and create empty `index.html`, `compositions/`, `assets/`, `renders/`)
+3. Either `npx hyperframes init --skip-skills` to scaffold (always `--skip-skills`, see "HyperFrames 0.9"), or copy the structure from a sibling project (`cp -r ../may-shorts-19/{hyperframes.json,meta.json} .` then edit `meta.json` for the new id/name/dimensions, and create empty `index.html`, `compositions/`, `assets/`, `renders/`)
 4. Pull in any shared brand assets the project needs (e.g. `cp ../../assets/brand-tokens.css assets/`; add client logo to `assets/` manually)
 5. Build the composition; lint + render from inside this folder
 
@@ -305,7 +317,7 @@ Cold-start prompt shape: *"Using /hyperframes, create a 10-second product intro 
 
 ## Registry (available via `npx hyperframes add <name>`)
 
-- **Blocks (38):** data viz (`data-chart`, `flowchart`), outros (`logo-outro`), social overlays (`instagram-follow`, `tiktok-follow`, `yt-lower-third`, `x-post`, `reddit-post`, `spotify-card`, `macos-notification`), app/UI (`app-showcase`, `ui-3d-reveal`), shader transitions (`glitch`, `whip-pan`, `cinematic-zoom`, `flash-through-white`, `light-leak`, `ripple-waves`, `chromatic-radial-split`, `cross-warp-morph`, `domain-warp-dissolve`, `gravitational-lens`, `ridged-burn`, `sdf-iris`, `swirl-vortex`, `thermal-distortion`), CSS transition packs (`transitions-3d|blur|cover|destruction|dissolve|distortion|grid|light|mechanical|other|push|radial|scale`)
+- **Blocks (lista histórica da 0.7 — na 0.9 são ~450 itens; buscar com `npx hyperframes catalog --query "<efeito>" --json`):** data viz (`data-chart`, `flowchart`), outros (`logo-outro`), social overlays (`instagram-follow`, `tiktok-follow`, `yt-lower-third`, `x-post`, `reddit-post`, `spotify-card`, `macos-notification`), app/UI (`app-showcase`, `ui-3d-reveal`), shader transitions (`glitch`, `whip-pan`, `cinematic-zoom`, `flash-through-white`, `light-leak`, `ripple-waves`, `chromatic-radial-split`, `cross-warp-morph`, `domain-warp-dissolve`, `gravitational-lens`, `ridged-burn`, `sdf-iris`, `swirl-vortex`, `thermal-distortion`), CSS transition packs (`transitions-3d|blur|cover|destruction|dissolve|distortion|grid|light|mechanical|other|push|radial|scale`)
 - **Components (3):** `grain-overlay`, `shimmer-sweep`, `grid-pixelate-wipe`
 - Browse: `npx hyperframes catalog --type block --json`
 
@@ -335,14 +347,21 @@ O merge trouxe o pipeline de edição do Nate como skills/scripts nativos — **
 
 - `npm run new-video -- <slug>` — cria projeto com estrutura completa
 - Ordem dos cortes: `cut-silences` primeiro → usa o vídeo E a transcrição retimada no `cut-mistakes` → decisões revisadas ficam em `approved-cuts.json` → `apply-cuts` aplica
-- Repetição intencional não é erro. Nunca misturar timestamps originais com footage editado
-- Validação: `node scripts/preflight.mjs <proj>` + `node scripts/validate-beat-sync.mjs <proj>` (beats ancorados: `data-anchor` com frase exata da transcrição; entrada entre 0,2s depois e 1,8s antes da palavra)
-- Evidência de verificação salva em `VERIFY.md` do projeto
-- Docs: `docs/WORKFLOW.md` (edição completa), `docs/SHORT-FORM.md` (reels/ads), `docs/TOOLS-AND-API-KEYS.md` (**ler antes de escolher** serviço de transcrição/geração — ElevenLabs Scribe é default do Nate; honrar pedidos por Whisper local). Reusar transcripts/assets existentes; tornar explícito qualquer upload não aprovado ou chamada paga antes de executar
+- Revisar cada erro no contexto. Repetição intencional não é erro. Sem cortes necessários: preservar o input ou usar lista de cortes vazia. Nunca misturar timestamps originais com footage editado
+- Preservar o raw. Cada etapa de edição grava num arquivo de saída novo; trabalho obsoleto é arquivado, não sobrescrito. Os utilitários de `scripts/` aceitam caminhos relativos ao diretório atual
+- Validação: `node scripts/preflight.mjs <proj>` + `node scripts/validate-beat-sync.mjs <proj>` (beats ancorados: `data-anchor` com frase exata da transcrição; entrada entre 0,2s depois e 1,8s antes da palavra). Timelines inline (sem `data-anchor`) exigem revisão manual de timing
+- Revisão do draft, além dos frames: ouvir as emendas de áudio; checar rosto cortado, overflow, flash preto, labels legíveis, clipping e sincronia A/V. Evidência salva em `VERIFY.md` do projeto
+- Docs: `docs/WORKFLOW.md` (edição completa), `docs/SHORT-FORM.md` + `docs/EDITING-PLAYBOOK.md` (reels/ads — house style medido do Nate e lições; o brief do cliente vence), `docs/TOOLS-AND-API-KEYS.md` (**ler antes de escolher** serviço de transcrição/geração/voz — ElevenLabs Scribe é default do Nate; honrar pedidos por Whisper local ou outro provedor). O script de transcrição incluído é só ElevenLabs; normalizar timestamps verificados antes dos cortes. Kie.ai é opcional e exige integração configurada + créditos. Reusar transcripts/assets existentes; tornar explícito qualquer upload não aprovado ou chamada paga antes de executar
+- Short-form: usar os validators de plano e footage (`npm run validate:short-form`, `npm run validate:footage`) — checagem estrutural complementa, não substitui, a revisão do vídeo e do áudio renderizados
+- Style library: `style-library/registry.json` indexa os cards (cada estilo tem DESIGN.md, tokens CSS e slots de texto nomeados); templates de cena inteira em `style-templates/README.md`
+
+### Aprovações
+
+Honrar aprovações já dadas. Sem aprovação de revisão: preparar primeiro o preview concreto ou a proposta de cortes. Lint passando nunca prova qualidade visual. Publicar ou fazer upload de vídeo pronto só com autorização explícita. Checagens automatizadas de navegador rodam headless, com Pointer Lock e captura de cursor desligados; input sintético fica dentro do navegador virtual.
 
 ### Runtime routing
 
-`AGENTS.md` e `CLAUDE.md` contêm o mesmo guia — manter sincronizados. Skills canônicas vivem em `.claude/skills/`; `npm run sync:skills` gera `.agents/skills/` (Codex). `$edit-video` no Codex = `/edit-video` no Claude Code.
+`AGENTS.md` é **cópia exata** deste `CLAUDE.md` (o `check-kit` falha se divergirem): editar só o `CLAUDE.md` e copiar por cima (`cp CLAUDE.md AGENTS.md`). Skills canônicas vivem em `.claude/skills/`; `npm run sync:skills` gera `.agents/skills/` (Codex). `$edit-video` no Codex = `/edit-video` no Claude Code. Modelo e permissões são escolha do usuário; `.codex/config.toml` só adiciona defaults de carregamento de documentos. Trabalhar localmente, sem subagentes, salvo pedido do usuário.
 
 ### Privacidade
 

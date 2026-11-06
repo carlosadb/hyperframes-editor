@@ -4,27 +4,36 @@
     "gsap": {
       "source": "heygen-com/hyperframes",
       "sourceType": "github",
-      "computedHash": "bf85f05f3c0146c18d6f6ff23e6a4cd4a7853462a6d637ea389b610f584d55f8"
+      "computedHash": "a95fa4e5d1e56d20cd6f0ee4202d9e9665f50bbc3bddbf9ed6dd5a40379f1bff"
     },
     "hyperframes": {
       "source": "heygen-com/hyperframes",
+      "ref": "v0.9.19",
       "sourceType": "github",
-      "computedHash": "48ee08e6c9f2f1e57515b3434c7ff93b32f063871f20d12e54b6b05b92aa139e"
+      "computedHash": "58743144e85a144f7c6c44fedd3c556d3bf9df3920ed13b2dd3776f14178caaa"
     },
     "hyperframes-cli": {
       "source": "heygen-com/hyperframes",
+      "ref": "v0.9.19",
       "sourceType": "github",
-      "computedHash": "a6b93319450a4b9a368bb6c3c473faf08991999b5a20fed844f7202a2edcd6a3"
+      "computedHash": "835eb750bfc1ccccb5b496ab2a03e1b7c806e4eeab5f49315d296b8ccd2816bd"
     },
     "hyperframes-registry": {
       "source": "heygen-com/hyperframes",
+      "ref": "v0.9.19",
       "sourceType": "github",
-      "computedHash": "187cb9060bc904c44e9a5f525ef2489b9750d398f7b82efd06568726db4fa2a4"
+      "computedHash": "e78b640a306d004d50871978a3a81bfcc512299dd0bb84a068d86004df36266f"
+    },
+    "media-use": {
+      "source": "heygen-com/hyperframes",
+      "ref": "v0.9.19",
+      "sourceType": "github",
+      "computedHash": "650eaa79fdaf86e320959cd629081beb6d67ea1aec4021295e75d49210fa0959"
     },
     "website-to-hyperframes": {
       "source": "heygen-com/hyperframes",
       "sourceType": "github",
-      "computedHash": "94e81e4b58af16e09f9ad09bf16700c1e154d20fd74e4cf2b5c8e571f75ba393"
+      "computedHash": "aeace5bd7d5190f14c3139c58bc08983d2635f110b931e98ac26310a8220d8fa"
     }
   }
 }

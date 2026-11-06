@@ -106,7 +106,7 @@ Otherwise continue:
 ### Scaffold
 
 1. `mkdir <project-folder>`
-2. If a sibling project with similar format exists, offer to copy its `hyperframes.json` + `meta.json` as a template. Otherwise from inside the folder: `npx hyperframes init`
+2. If a sibling project with similar format exists, offer to copy its `hyperframes.json` + `meta.json` as a template. Otherwise from inside the folder: `npx hyperframes init --skip-skills` (never without `--skip-skills`: it would install beacon-enabled skill copies)
 3. Edit `meta.json` with the user's slug, dimensions, fps.
 4. Copy supplied assets into `<project-folder>/assets/`.
 5. Create `<project-folder>/assets/style-profile.md` from Gate 3 — single source of truth for palette/fonts/logo.

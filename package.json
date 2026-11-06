@@ -25,7 +25,7 @@
     "node": ">=22"
   },
   "devDependencies": {
-    "hyperframes": "0.7.109",
+    "hyperframes": "0.9.19",
     "gsap": "3.14.2",
     "playwright": "^1.59.1"
   }
